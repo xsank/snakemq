@@ -60,7 +60,7 @@ class SSLConfig(object):
 
 class LinkSocket(object):
     def __init__(self, sock=None, ssl_config=None, remote_peer=None):
-        if (ssl_config is not None) and not HAS_SSL:
+        if not (ssl_config is None or HAS_SSL):
             raise RuntimeError("ssl module is not available")
         assert (sock is None) or isinstance(sock, socket.socket)
         self.sock = sock or self.create_socket()
@@ -130,14 +130,14 @@ class LinkSocket(object):
         """
         If data is ``None`` then ``self.write_buf`` is used.
         """
-        if (data is not None) and not self.send_finished:
+        if not (data is None or self.send_finished):
             raise SendNotFinished(("previous send on %r is not finished, " +
                               "wait for on_ready_to_send") % self)
 
         data = data or self.write_buf
 
         self.send_finished = False
-        if self.ssl_config is None:
+        if not self.ssl_config:
             self.last_send_size = self.sock.send(data)
         else:
             try:
@@ -204,10 +204,7 @@ class LinkSocket(object):
         :see: python documentation - ssl.SSLSocket.getpeercert()
         :return: peer's SSL certificate if available or None
         """
-        if self.ssl_config is None:
-            return None
-        else:
-            return self.sock._sslobj.peer_certificate(binary_form)
+        return self.sock._sslobj.peer_certificate(binary_form) if self.ssl_config else None
 
 ############################################################################
 ############################################################################
