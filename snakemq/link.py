@@ -60,7 +60,7 @@ class SSLConfig(object):
 
 class LinkSocket(object):
     def __init__(self, sock=None, ssl_config=None, remote_peer=None):
-        if ssl_config and not HAS_SSL):
+        if ssl_config and not HAS_SSL:
             raise RuntimeError("ssl module is not available")
         assert (sock is None) or isinstance(sock, socket.socket)
         self.sock = sock or self.create_socket()
@@ -130,7 +130,7 @@ class LinkSocket(object):
         """
         If data is ``None`` then ``self.write_buf`` is used.
         """
-        if data and not self.send_finished):
+        if not (data is None or self.send_finished):
             raise SendNotFinished(("previous send on %r is not finished, " +
                               "wait for on_ready_to_send") % self)
 
