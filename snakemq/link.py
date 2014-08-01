@@ -130,7 +130,7 @@ class LinkSocket(object):
         """
         If data is ``None`` then ``self.write_buf`` is used.
         """
-        if not (data is None or self.send_finished):
+        if data and not self.send_finished):
             raise SendNotFinished(("previous send on %r is not finished, " +
                               "wait for on_ready_to_send") % self)
 
