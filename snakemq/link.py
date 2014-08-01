@@ -60,7 +60,7 @@ class SSLConfig(object):
 
 class LinkSocket(object):
     def __init__(self, sock=None, ssl_config=None, remote_peer=None):
-        if not (ssl_config is None or HAS_SSL):
+        if ssl_config and not HAS_SSL):
             raise RuntimeError("ssl module is not available")
         assert (sock is None) or isinstance(sock, socket.socket)
         self.sock = sock or self.create_socket()
